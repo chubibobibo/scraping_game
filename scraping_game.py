@@ -1,7 +1,9 @@
 # https://quotes.toscrape.com/
 
+# @NOTE: sleep allows us to space out our requests
 import requests
 from bs4 import BeautifulSoup
+from time import sleep
 
 # creating variables for the url's to allow us to modify it dynamically.
 base_url = 'https://quotes.toscrape.com'
@@ -25,18 +27,21 @@ while url:
     # author = soup.select('.author')
     # print(author)
 
-
     # loop through the list of quotes and use get_text() method to each of the quotes to obtain just the inner text
     # we do the same for the author by finding the next sibling and looking for the class author.
     # to  get the href tag, we need to find the element with author class and since the href tag is it's sibling, we are able to access it using find_next_sibling. and using brackets to obtain the href attribute.
     for each_quote in quotes:
-        all_quotes.append({'text': each_quote.get_text(), 'author':         each_quote.find_next_sibling().find(class_='author').get_text(),    'link': each_quote.find_next_sibling().find(class_='author').find_next_sibling()['href']})
+        all_quotes.append({'text': each_quote.get_text(), 'author':       each_quote.find_next_sibling().find(class_='author').get_text(), 'link': each_quote.find_next_sibling().find(class_='author').find_next_sibling()['href']})
     # print(all_quotes)
 
     next_btn = soup.find(class_ = 'next') # looks for the class of the next button
-    btn_link = next_btn.find('a')['href'] # accesses the link in the anchor tag in the element with the class 'next
-    print(btn_link)
-    url = btn_link if btn_link else None
+    if next_btn:
+        btn_link = next_btn.find('a')['href'] # accesses the link in the anchor tag in the element with the class 'next
+        # print(btn_link)
+        url = btn_link if btn_link else None
+    else:
+        url = None
     # print(btn_link)
+    # sleep(2)# argument in seconds
 print(all_quotes)
     
