@@ -59,21 +59,33 @@ user_input = ''
 
 while user_input.lower() != random_quote['author'].lower() and chances > 0 :
 # while chances > 0 :
-    print('Here is a random quote...')
-    print(random_quote['text'])
-    print(f'Try to guess the author. Guesses remaining {chances} ')
+    if chances == 3:
+        print('Here is a random quote...')
+        print(random_quote['text'])
+        print(f'Try to guess the author. Guesses remaining {chances} ')
     user_input = input()
     chances -= 1
-    if chances == 0:
+    if chances == 0 and user_input.lower() != random_quote['author'].lower():
         print(f'You guessed wrong. Chances left {chances}')
         print('Game over')
         break
     elif chances > 1:
         print(f'You guessed wrong. Try Again. Chances left {chances}')
         print('Here is a hint to help you out:')
-        print(f"The first letter of the author's name is: {random_quote['author'][0] }")
-    else:
-        print(f"The first letter of the author's surname is: {random_quote['author'][0] }")
+        print(f'The author of this quote is: {random_quote['author']}')
+    elif chances == 1:
+            # obtain a new request using the "link" key in our random_quote dictionary to obtain author's birthdate
+            response = requests.get(f'{base_url}{random_quote['link']}')
+            # print(response.text)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            author_date = soup.find(class_='author-born-date').get_text()
+            author_location = soup.find(class_='author-born-location').get_text()
+            print('You guessed wrong, Here is another tip')
+            print(f"The author's birthdate is: {author_date} ")
+        # print(author_date)
+    # else:
+    #     print(f"The first letter of the author's surname is: {random_quote['author'][0] }")
+print('You got it')
         
 
 
