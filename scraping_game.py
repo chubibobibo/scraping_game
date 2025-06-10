@@ -58,34 +58,49 @@ chances = 3
 user_input = ''
 
 while user_input.lower() != random_quote['author'].lower() and chances > 0 :
-# while chances > 0 :
-    if chances == 3:
-        print('Here is a random quote...')
-        print(random_quote['text'])
-        print(f'Try to guess the author. Guesses remaining {chances} ')
-    user_input = input()
-    chances -= 1
-    if chances == 0 and user_input.lower() != random_quote['author'].lower():
-        print(f'You guessed wrong. Chances left {chances}')
-        print('Game over')
-        break
-    elif chances > 1:
-        print(f'You guessed wrong. Try Again. Chances left {chances}')
-        print('Here is a hint to help you out:')
-        print(f'The author of this quote is: {random_quote['author']}')
-    elif chances == 1:
-            # obtain a new request using the "link" key in our random_quote dictionary to obtain author's birthdate
-            response = requests.get(f'{base_url}{random_quote['link']}')
-            # print(response.text)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            author_date = soup.find(class_='author-born-date').get_text()
-            author_location = soup.find(class_='author-born-location').get_text()
+     # obtain a new request using the "link" key in our random_quote    dictionary to obtain author's birthdate
+        response = requests.get(f'{base_url}{random_quote['link']}')
+        # print(response.text)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        author_date = soup.find(class_='author-born-date').get_text()
+        author_location = soup.find(class_='author-born-location').get_text()
+
+        if chances == 3:
+            print('Here is a random quote...')
+            print(random_quote['text'])
+            print(f'Try to guess the author. Guesses remaining {chances} ')
+            print(f"Here is a hint: The author's birth day is: {author_date}")
+        user_input = input()
+        chances -= 1
+
+        if chances == 0 and user_input.lower() != random_quote['author'].lower():
+            print(f'You guessed wrong. Chances left {chances}')
+            print(f'You guessed wrong. The answer is  {random_quote['author']}')
+            print('Game over')
+            break
+
+        elif chances == 2:
+            print(f'You guessed wrong. Try Again. Chances left {chances}')
+            print('Here is a hint to help you out:')
+            # print(f'The author of this quote is: {random_quote['author']}')
+            print(f"The author's birth place is: {author_location} ")
+            
+        elif chances == 1:
+            # NOTE: initial_list = where we are appending the each name that was split which we will be joining using join()
+            # NOTE: split_name = author's name split using split()
+            # NOTE: initials = list comprehension that appends initial_list with the first letter of every iteration of the split_name.
+            # NOTE: final_initials = joins the content of the initial_list with a "."
+            initial_list = []
+            split_name = random_quote['author'].split(' ')  
+            initials = [initial_list.append(each_name[0]) for each_name in split_name]
+            # print(initial_list)
+         
+            final_initials = ".".join(initial_list)
             print('You guessed wrong, Here is another tip')
-            print(f"The author's birthdate is: {author_date} ")
-        # print(author_date)
-    # else:
-    #     print(f"The first letter of the author's surname is: {random_quote['author'][0] }")
-print('You got it')
+            print(f"The author's initials are: {final_initials} ")
+        
+        else:
+            print('You got it')
         
 
 
