@@ -65,6 +65,19 @@ while user_input.lower() != random_quote['author'].lower() and chances > 0 and c
         author_date = soup.find(class_='author-born-date').get_text()
         author_location = soup.find(class_='author-born-location').get_text()
         # user_input = input()
+        # if user_input.lower() != random_quote['author'].lower() and chances > 0 and continue_play:
+        #      chances -= 1
+    
+        if chances == 3:
+            print('Here is a random quote...')
+            print(random_quote['text'])
+            print(f'Try to guess the author. Guesses remaining {chances} ')
+            print(f"Here is a hint: The author's birth day is: {author_date}")
+        
+        user_input = input()
+
+        if user_input.lower() != random_quote['author'].lower() and chances > 0 and continue_play:
+            chances -= 1
 
         if user_input.lower() == random_quote['author'].lower() and chances > 0 and continue_play:
             print('You got it')
@@ -80,15 +93,8 @@ while user_input.lower() != random_quote['author'].lower() and chances > 0 and c
             else:
                 print('Choice incorrect. Should be yes / no')
                 input()   
-
-        elif chances == 3:
-            print('Here is a random quote...')
-            print(random_quote['text'])
-            print(f'Try to guess the author. Guesses remaining {chances} ')
-            print(f"Here is a hint: The author's birth day is: {author_date}")
      
         
-
 
         elif chances == 2:
             print(f'You guessed wrong. Try Again. Chances left {chances}')
@@ -112,8 +118,9 @@ while user_input.lower() != random_quote['author'].lower() and chances > 0 and c
             print('You guessed wrong, Here is another tip')
             print(f"The author's initials are: {final_initials} ")
     
-        user_input = input()
-        chances -= 1
+        # user_input = input()
+        # chances -= 1
+       
 
 
         if chances == 0 and user_input.lower() != random_quote['author'].lower():
