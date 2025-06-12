@@ -49,96 +49,92 @@ while url:
 # print(all_quotes)
 
 #=============================== Game Logic=============================
-random_quote = choice(all_quotes)
-# print(f'This is a random quote: {random_quote['text']}')
-print(f'This is the author: {random_quote['author']}')
+def play_func():
+    random_quote = choice(all_quotes)
+    # print(f'This is a random quote: {random_quote['text']}')
+    print(f'This is the author: {random_quote['author']}')
 
-chances = 3
-user_input = ''
-continue_play = True
+    chances = 3
+    user_input = ''
+    continue_play = True
 
-while user_input.lower() != random_quote['author'].lower() and chances > 0 and continue_play:
-     # obtain a new request using the "link" key in our random_quote    dictionary to obtain author's birthdate
-        response = requests.get(f'{base_url}{random_quote['link']}')
-        # print(response.text)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        author_date = soup.find(class_='author-born-date').get_text()
-        author_location = soup.find(class_='author-born-location').get_text()
-        # user_input = input()
-        # if user_input.lower() != random_quote['author'].lower() and chances > 0 and continue_play:
-        #      chances -= 1
-    
-        if chances == 3:
-            print('Here is a random quote...')
-            print(random_quote['text'])
-            print(f'Try to guess the author. Guesses remaining {chances} ')
-            print(f"Here is a hint: The author's birth day is: {author_date}")
+    while user_input.lower() != random_quote['author'].lower() and chances > 0:
+        # obtain a new request using the "link" key in our random_quote    dictionary to obtain author's birthdate
+            response = requests.get(f'{base_url}{random_quote['link']}')
+            # print(response.text)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            author_date = soup.find(class_='author-born-date').get_text()
+            author_location = soup.find(class_='author-born-location').get_text()
+            # user_input = input()
+            # if user_input.lower() != random_quote['author'].lower() and chances > 0 and continue_play:
+            #      chances -= 1
         
-        user_input = input()
+            if chances == 3:
+                print('Here is a random quote...')
+                print(random_quote['text'])
+                print(f'Try to guess the author. Guesses remaining {chances} ')
+                print(f"Here is a hint: The author's birth day is: {author_date}")
+            
+            user_input = input()
 
-        if user_input.lower() != random_quote['author'].lower() and chances > 0 and continue_play:
-            chances -= 1
+            if user_input.lower() != random_quote['author'].lower() and chances > 0:
+                chances -= 1
 
-        if user_input.lower() == random_quote['author'].lower() and chances > 0 and continue_play:
-            print('You got it')
-            play = input('Do you want to play again? yes/no')
-            if play == 'no':
-                continue_play == False
-            elif play == 'yes':
-                continue_play == True
-                chances = 3
-                random_quote = choice(all_quotes)
-                # print(f'This is a random quote: {random_quote['text']}')
-                print(f'This is the author: {random_quote['author']}')  
-            else:
-                print('Choice incorrect. Should be yes / no')
-                input()   
-     
+            if user_input.lower() == random_quote['author'].lower() and chances > 0 and continue_play:
+                print('You got it')  
         
+            elif chances == 2:
+                print(f'You guessed wrong. Try Again. Chances left {chances}')
+                print('Here is a hint to help you out:')
+                # print(f'The author of this quote is: {random_quote['author']}')
+                print(f"The author's birth place is: {author_location} ")
+                
+            elif chances == 1:
+                # NOTE: initial_list = where we are appending the each name that was split which we will be joining using join()
+                # NOTE: split_name = author's name split using split()
+                # NOTE: initials = list comprehension that appends initial_list with the first letter of every iteration of the split_name.
+                # NOTE: final_initials = joins the content of the initial_list with a "."
+                initial_list = []
+                split_name = random_quote['author'].split(' ')  
+                initials = [initial_list.append(each_name[0]) for each_name in split_name]
 
-        elif chances == 2:
-            print(f'You guessed wrong. Try Again. Chances left {chances}')
-            print('Here is a hint to help you out:')
-            # print(f'The author of this quote is: {random_quote['author']}')
-            print(f"The author's birth place is: {author_location} ")
-     
             
-            
-        elif chances == 1:
-            # NOTE: initial_list = where we are appending the each name that was split which we will be joining using join()
-            # NOTE: split_name = author's name split using split()
-            # NOTE: initials = list comprehension that appends initial_list with the first letter of every iteration of the split_name.
-            # NOTE: final_initials = joins the content of the initial_list with a "."
-            initial_list = []
-            split_name = random_quote['author'].split(' ')  
-            initials = [initial_list.append(each_name[0]) for each_name in split_name]
-            # print(initial_list)
-         
-            final_initials = ".".join(initial_list)
-            print('You guessed wrong, Here is another tip')
-            print(f"The author's initials are: {final_initials} ")
-    
-        # user_input = input()
-        # chances -= 1
-       
+                final_initials = ".".join(initial_list)
+                print('You guessed wrong, Here is another tip')
+                print(f"The author's initials are: {final_initials} ")
 
-
-        if chances == 0 and user_input.lower() != random_quote['author'].lower():
-            print(f'You guessed wrong. Chances left {chances}')
-            print(f'You guessed wrong. The answer is  {random_quote   ['author']}   ')
-            print('Game over')
-            play = input('Do you want to continue playing? yes/no')
-            if play == 'no':
-                continue_play == False
-            elif play == 'yes':
-                continue_play == True
-                chances = 3
-                random_quote = choice(all_quotes)
-                #print(f'This is a random quote: {random_quote['text']}')
-                print(f'This is the author: {random_quote['author']}')  
             else:
-                print('Choice incorrect. Should be yes / no')
-                play = input()          
+                print(f'You guessed wrong. Chances left {chances}')
+                print(f'You guessed wrong. The answer is  {random_quote   ['author']}   ')
+                print('Game over')
+
+
+
+
+play_again = ''
+
+
+while play_again.lower() not in ('yes', 'y', 'no', 'n'): # checking value of play_again if it exists in the tuple
+    play_func()
+    play_again = input('Do you want to play again? ')
+
+    while play_again.lower() in ('yes', 'y'):
+         play_func()
+         play_again = input('Do you want to play again? ')
+    else:
+         print('Thank you for playing') 
+    break
+
+
+# if play_again in ('yes', 'y'):
+#     print('play again')
+#     play_func()
+#     play_again = input('Do you want to play again? ')
+# elif play_again in ('no', 'n'):
+#     print('Thank you for playing') 
+#     break
+
+          
 
         
 
