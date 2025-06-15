@@ -8,49 +8,53 @@ from random import choice
 
 # creating variables for the url's to allow us to modify it dynamically.
 base_url = 'https://quotes.toscrape.com'
-url = '/page/1/'
 
 # print(soup.body) # prints the html body of the first page of the site
-
+def scrape_quotes():
     #create a list where we are going to store the quotes.
-all_quotes = []
-# loop that will allow us to navigate to different pages.abs
-while url:
-    print(f'Now scraping {base_url}{url}')
-    # create a request to the site to be scrape using the url variables
-    response = requests.get(f'{base_url}{url}')
-    soup = BeautifulSoup(response.text, 'html.parser') # passing the response (which is a text to BS to parse
-    # quotes = soup.select('.quote')
-    # quotes = soup.find(class_='text')
-    # NOTE: all quotes are in a span with a class of 'text'
-    quotes = soup.select('.text') # returns a list of all quotes in a list
-    # author = soup.select('.author')
-    # print(author)
+    all_quotes = []
+    url = '/page/1/'
+    # loop that will allow us to navigate to different pages.abs
+    while url:
+        print(f'Now scraping {base_url}{url}')
+        # create a request to the site to be scrape using the url variables
+        response = requests.get(f'{base_url}{url}')
+        soup = BeautifulSoup(response.text, 'html.parser') # passing the response (which is a text to BS to parse
+        # quotes = soup.select('.quote')
+        # quotes = soup.find(class_='text')
+        # NOTE: all quotes are in a span with a class of 'text'
+        quotes = soup.select('.text') # returns a list of all quotes in a list
+        # author = soup.select('.author')
+        # print(author)
 
-    # loop through the list of quotes and use get_text() method to each of the quotes to obtain just the inner text
-    # we do the same for the author by finding the next sibling and looking for the class author.
-    # to  get the href tag, we need to find the element with author class and since the href tag is it's sibling, we are able to access it using find_next_sibling. and using brackets to obtain the href attribute.
-    for each_quote in quotes:
-        all_quotes.append({
-            'text': each_quote.get_text(), 
-            'author': each_quote.find_next_sibling().find(class_='author').get_text(),
-            'link': each_quote.find_next_sibling().find(class_='author').find_next_sibling()['href']})
-    # print(all_quotes)
+        # loop through the list of quotes and use get_text() method to each of the quotes to obtain just the inner text
+        # we do the same for the author by finding the next sibling and looking for the class author.
+        # to  get the href tag, we need to find the element with author class and since the href tag is it's sibling, we are able to access it using find_next_sibling. and using brackets to obtain the href attribute.
+        for each_quote in quotes:
+            all_quotes.append({
+                'text': each_quote.get_text(), 
+                'author': each_quote.find_next_sibling().find(class_='author').get_text(),
+                'link': each_quote.find_next_sibling().find(class_='author').find_next_sibling()['href']})
+        # print(all_quotes)
 
-    next_btn = soup.find(class_ = 'next') # looks for the class of the next button
-    if next_btn:
-        btn_link = next_btn.find('a')['href'] # accesses the link in the anchor tag in the element with the class 'next
+        next_btn = soup.find(class_ = 'next') # looks for the class of the next button
+        if next_btn:
+            btn_link = next_btn.find('a')['href'] # accesses the link in the anchor tag in the element with the class 'next
+            # print(btn_link)
+            url = btn_link if btn_link else None
+        else:
+            url = None
         # print(btn_link)
-        url = btn_link if btn_link else None
-    else:
-        url = None
-    # print(btn_link)
-    # sleep(2)# argument in seconds
-# print(all_quotes)
+        # sleep(2)# argument in seconds
+    # print(all_quotes)
+    return all_quotes
+
+
 
 #=============================== Game Logic=============================
-def play_func():
-    random_quote = choice(all_quotes)
+scraped_quotes = scrape_quotes()
+def play_func(scraped_quotes):
+    random_quote = choice(scraped_quotes)
     # print(f'This is a random quote: {random_quote['text']}')
     print(f'This is the author: {random_quote['author']}')
 
@@ -108,31 +112,27 @@ def play_func():
                 print(f'You guessed wrong. The answer is  {random_quote   ['author']}   ')
                 print('Game over')
 
-
-
-
 play_again = ''
 
-
 while play_again.lower() not in ('yes', 'y', 'no', 'n'): # checking value of play_again if it exists in the tuple
-    play_func()
+ 
+    play_func(scraped_quotes)
     play_again = input('Do you want to play again? ')
 
     while play_again.lower() in ('yes', 'y'):
-         play_func()
+         play_func(scraped_quotes)
          play_again = input('Do you want to play again? ')
     else:
          print('Thank you for playing') 
     break
 
+    # if play_again.lower() in ('yes', 'y'):
+    #     return play_func()
+    # else:
+    #     print('Thank you for playing')
 
-# if play_again in ('yes', 'y'):
-#     print('play again')
-#     play_func()
-#     play_again = input('Do you want to play again? ')
-# elif play_again in ('no', 'n'):
-#     print('Thank you for playing') 
-#     break
+
+
 
           
 
